@@ -2,68 +2,61 @@
 ### MONITORS ###
 ################
 
-# See https://wiki.hyprland.org/Configuring/Monitors/
+{{ if eq .chezmoi.hostname "rooftop" -}}
 monitor=DP-1,3440x1440@170,0x0,1
 monitor=HDMI-A-2,1920x1080@120,-1920x700,1
 monitor=HDMI-A-1,1920x1080@60,3440x-200,1,transform,2
 monitor=DP-2,1920x1080@60,3440x880,1
+{{ else if eq .chezmoi.hostname "rooflaptop" -}}
 monitor=eDP-1,2256x1504@60,0x0,1
+{{ end }}
 
 ###################
 ### MY PROGRAMS ###
 ###################
 
-# See https://wiki.hyprland.org/Configuring/Keywords/
-
-# Set programs that you use
 $terminal = kitty
 $fileManager = dolphin
 $menu = wofi --show drun
-
 
 #################
 ### AUTOSTART ###
 #################
 
-# Autostart necessary processes (like notifications daemons, status bars, etc.)
-# Or execute your favorite apps at launch like this:
-
-# exec-once = $terminal
-# exec-once = nm-applet &
 exec-once = waybar & hyprpaper
-exec-once = fcitx5
+exec-once = fcitx5 -d
+{{ if eq .chezmoi.hostname "rooftop" -}}
 exec-once = xrandr --output DP-2 --primary
+{{ end }}
 
 #############################
 ### ENVIRONMENT VARIABLES ###
 #############################
 
-# See https://wiki.hyprland.org/Configuring/Environment-variables/
-
 env = XCURSOR_SIZE,24
 env = HYPRCURSOR_SIZE,24
-
+{{ if eq .chezmoi.hostname "rooftop" -}}
+env = HYPRCURSOR_THEME,NotwaitaWhite
+env = LIBVA_DRIVER_NAME,nvidia
+env = XDG_SESSION_TYPE,wayland
+env = GBM_BACKEND,nvidia-drm
+env = __GLX_VENDOR_LIBRARY_NAME,nvidia
+env = NVD_BACKEND,direct
+{{ else if eq .chezmoi.hostname "rooflaptop" -}}
+env = HYPRCURSOR_THEME,theme_NotwaitaWhite
+{{ end }}
 
 #####################
 ### LOOK AND FEEL ###
 #####################
 
-# Refer to https://wiki.hyprland.org/Configuring/Variables/
-
-# https://wiki.hyprland.org/Configuring/Variables/#general
 general {
     gaps_in = 0
     gaps_out = 0
-
     border_size = 0
-
-    # Please see https://wiki.hyprland.org/Configuring/Tearing/ before you turn this on
     allow_tearing = false
-
     layout = dwindle
 }
-
-# https://wiki.hyprland.org/Configuring/Variables/#decoration
 decoration {
     shadow { 
     	enabled = false 
@@ -76,64 +69,55 @@ animations {
     enabled = no
 }
 dwindle {
-    pseudotile = true # Master switch for pseudotiling. Enabling is bound to mainMod + P in the keybinds section below
-    preserve_split = true # You probably want this
+    pseudotile = true
+    preserve_split = true
 }
 master {
     new_status = master
 }
 misc {
-    force_default_wallpaper = 1 # Set to 0 or 1 to disable the anime mascot wallpapers
-    disable_hyprland_logo = true # If true disables the random hyprland logo / anime girl background. :(
+    force_default_wallpaper = 1
+    disable_hyprland_logo = true
 }
 
 #############
 ### INPUT ###
 #############
 
-# https://wiki.hyprland.org/Configuring/Variables/#input
 input {
     kb_layout = us
     kb_variant =
     kb_model =
     kb_options =
     kb_rules =
-
     follow_mouse = 1
-
-    sensitivity = 0 # -1.0 - 1.0, 0 means no modification.
-
+    sensitivity = 0
     touchpad {
         natural_scroll = false
-	clickfinger_behavior = 1
+        clickfinger_behavior = 1
     }
 }
-
-# https://wiki.hyprland.org/Configuring/Variables/#gestures
+{{ if eq .chezmoi.hostname "rooflaptop" -}}
 gesture = 3, horizontal, workspace
 gesture = 2, pinch, float
-# Example per-device config
-# See https://wiki.hyprland.org/Configuring/Keywords/#per-device-input-configs for more
+{{ end }}
 device {
     name = epic-mouse-v1
     sensitivity = -0.5
 }
 
-env = HYPRCURSOR_THEME,theme_NotwaitaWhite
-env = HYPRCURSOR_SIZE,24x24
-
 ###################
 ### KEYBINDINGS ###
 ###################
 
-$mainMod = SUPER # Sets "Windows" key as main modifier
+$mainMod = SUPER
 
 bind = $mainMod, C, exec, $terminal
 bind = $mainMod, Q, killactive,
 bind = $mainMod, V, togglefloating,
 bind = $mainMod, R, exec, $menu
-bind = $mainMod, P, pseudo, # dwindle
-bind = $mainMod, J, togglesplit, # dwindle
+bind = $mainMod, P, pseudo,
+bind = $mainMod, J, togglesplit,
 bind = $mainMod, SPACE, exec, rofi -show combi
 bind = $mainMod SHIFT, S, exec, grim -g "$(slurp -d)" - | wl-copy
 
@@ -158,34 +142,25 @@ bind = $mainMod SHIFT, 7, movetoworkspace, 7
 bind = $mainMod SHIFT, 8, movetoworkspace, 8
 bind = $mainMod SHIFT, 9, movetoworkspace, 9
 bind = $mainMod SHIFT, 0, movetoworkspace, 10
+
 bind = $mainMod, P, pin
 bind = $mainMod, mouse_down, workspace, e+1
 bind = $mainMod, mouse_up, workspace, e-1
 
-# Move/resize windows with mainMod + LMB/RMB and dragging
 bindm = $mainMod, mouse:272, movewindow
 bindm = $mainMod, mouse:273, resizewindow
 
-# Laptop multimedia keys for volume and LCD brightness
-# bindel = ,XF86AudioRaiseVolume, exec, wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+
-# bindel = ,XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-
-
 bindel = ,XF86AudioRaiseVolume, exec, swayosd-client --output-volume raise
 bindel = ,XF86AudioLowerVolume, exec, swayosd-client --output-volume lower
-
 bindel = ,XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
 bindel = ,XF86AudioMicMute, exec, wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle
 bindel = ,XF86MonBrightnessUp, exec, brightnessctl s 10%+
 bindel = ,XF86MonBrightnessDown, exec, brightnessctl s 10%-
 
-# Requires playerctl
 bindl = , XF86AudioNext, exec, playerctl next
 bindl = , XF86AudioPause, exec, playerctl play-pause
 bindl = , XF86AudioPlay, exec, playerctl play-pause
 bindl = , XF86AudioPrev, exec, playerctl previous
 
-# Ignore maximize requests from apps. You'll probably like this.
 windowrule = suppressevent maximize, class:.*
-
-# Fix some dragging issues with XWayland
 windowrule = nofocus,class:^$,title:^$,xwayland:1,floating:1,fullscreen:0,pinned:0
