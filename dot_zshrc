@@ -1,0 +1,118 @@
+# =============================================================================
+# .zshrc
+# =============================================================================
+
+# ── History ───────────────────────────────────────────────────────────────────
+HISTSIZE=10000
+SAVEHIST=10000
+HISTFILE="$HOME/.local/state/zsh/history"
+mkdir -p "$HOME/.local/state/zsh"
+
+setopt HIST_IGNORE_DUPS
+setopt HIST_IGNORE_SPACE
+setopt SHARE_HISTORY
+
+# ── XDG ───────────────────────────────────────────────────────────────────────
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_CACHE_HOME="$HOME/.cache"
+export XDG_STATE_HOME="$HOME/.local/state"
+
+# ── Environment ───────────────────────────────────────────────────────────────
+export EDITOR=nvim
+export VISUAL=nvim
+export PAGER=less
+
+export NPM_CONFIG_USERCONFIG="$XDG_CONFIG_HOME/npm/npmrc"
+export NPM_CONFIG_CACHE="$XDG_CACHE_HOME/npm"
+export LESSHISTFILE="$XDG_STATE_HOME/less/history"
+export PYTHONSTARTUP="$XDG_CONFIG_HOME/python/pythonrc"
+
+# ── Path ──────────────────────────────────────────────────────────────────────
+export PATH="$HOME/.local/bin:$PATH"
+
+# ── Prompt ────────────────────────────────────────────────────────────────────
+autoload -Uz vcs_info
+precmd() { vcs_info }
+zstyle ':vcs_info:git:*' formats ' (%b)'
+setopt PROMPT_SUBST
+PROMPT='%F{cyan}%~%f%F{yellow}${vcs_info_msg_0_}%f %F{green}❯%f '
+
+# ── Completion ────────────────────────────────────────────────────────────────
+autoload -Uz compinit
+compinit -d "$XDG_CACHE_HOME/zsh/zcompdump"
+mkdir -p "$XDG_CACHE_HOME/zsh"
+
+zstyle ':completion:*' menu select
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'  # case insensitive
+zstyle ':completion:*' list-colors ''
+
+# ── Key bindings ──────────────────────────────────────────────────────────────
+bindkey '^[[A' history-search-backward   # up arrow searches history
+bindkey '^[[B' history-search-forward    # down arrow searches history
+bindkey '^[[H' beginning-of-line         # home
+bindkey '^[[F' end-of-line               # end
+bindkey '^[[3~' delete-char              # delete
+
+# ── Aliases — navigation ──────────────────────────────────────────────────────
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias ~='cd ~'
+
+# ── Aliases — ls ─────────────────────────────────────────────────────────────
+alias ls='ls --color=auto'
+alias ll='ls -lah'
+alias la='ls -A'
+alias l='ls -CF'
+
+# ── Aliases — editors ─────────────────────────────────────────────────────────
+alias v='nvim'
+alias vi='nvim'
+alias vim='nvim'
+
+# ── Aliases — git ─────────────────────────────────────────────────────────────
+alias g='git'
+alias gs='git status'
+alias ga='git add'
+alias gc='git commit'
+alias gp='git push'
+alias gl='git log --oneline --graph --decorate'
+alias gd='git diff'
+
+# ── Aliases — pacman / yay ────────────────────────────────────────────────────
+alias pac='sudo pacman -S'
+alias pacu='sudo pacman -Syu'
+alias pacr='sudo pacman -Rns'
+alias pacs='pacman -Ss'
+alias yays='yay -Ss'
+alias yayu='yay -Syu'
+
+# ── Aliases — dotfiles ────────────────────────────────────────────────────────
+alias dotpush='chezmoi re-add ~/.config && cd ~/.local/share/chezmoi && git add . && git commit -m "update dotfiles" && git push'
+alias dotpull='chezmoi update'
+
+# ── Aliases — misc ────────────────────────────────────────────────────────────
+alias grep='grep --color=auto'
+alias df='df -h'
+alias du='du -sh'
+alias free='free -h'
+alias wget='wget --hsts-file="$XDG_DATA_HOME/wget-hsts"'
+alias cat='bat'                          # replace cat with bat
+alias find='fd'                          # replace find with fd
+alias clip='wl-copy'                     # pipe output to clipboard
+
+# ── direnv ────────────────────────────────────────────────────────────────────
+eval "$(direnv hook zsh)"
+
+# ── zsh plugins (installed via pacman) ───────────────────────────────────────
+# syntax highlighting — install with: sudo pacman -S zsh-syntax-highlighting
+source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh 2>/dev/null
+
+# autosuggestions — install with: sudo pacman -S zsh-autosuggestions
+source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh 2>/dev/null
+
+# ── fcitx5 input method ───────────────────────────────────────────────────────
+export GTK_IM_MODULE=fcitx
+export QT_IM_MODULE=fcitx
+export XMODIFIERS=@im=fcitx
