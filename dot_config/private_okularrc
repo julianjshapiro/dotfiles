@@ -1,0 +1,14 @@
+[Desktop Entry]
+FullScreen=false
+
+[General]
+LockSidebar=true
+ShowSidebar=true
+
+[Recent Files]
+File1[$e]=$HOME/Downloads/Apostol Calc I-pages-2-pages-1.pdf
+File2[$e]=$HOME/Downloads/asmt3.ps
+File3[$e]=$HOME/Downloads/configuration.nix
+Name1[$e]=Apostol Calc I-pages-2-pages-1.pdf
+Name2[$e]=asmt3.ps
+Name3[$e]=configuration.nix

@@ -1,0 +1,21 @@
+configuration {
+  modes: [ combi ];
+  combi-modes: "window,drun,run,emoji:rofimoji,calc:rofi-calc";
+}
+
+@theme "gruvbox-dark-hard"
+
+/* Insert theme modifications after this */
+
+* {
+    gruvbox-dark-bg0-hard:     #000000;
+    gruvbox-dark-bg0:          #111111;
+    gruvbox-dark-bg2:          #ffffff;
+    gruvbox-dark-fg0:          #000000;
+    gruvbox-dark-fg1:          #ffffff;
+    gruvbox-dark-red-dark:     #000000;
+    gruvbox-dark-red-light:    #000000;
+    gruvbox-dark-yellow-dark:  #ffffff;
+    gruvbox-dark-yellow-light: #ffffff;
+    gruvbox-dark-gray:         #000000;
+}

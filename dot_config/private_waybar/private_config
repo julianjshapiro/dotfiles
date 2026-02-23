@@ -1,0 +1,33 @@
+{
+  "layer": "bottom",
+  "position": "top",
+  "height": 24,
+  "spacing": 5,
+
+  "modules-left": ["hyprland/workspaces", "hyprland/window"],
+  "modules-right": ["battery", "clock"],
+
+  "clock": {
+    "format": "{:%Y/%m/%d %H:%M:%S}",
+    "interval": 1
+  },
+
+  "battery": {
+    "format": "{capacity}%{icon}",
+    "format-charging": "{capacity}% charging",
+    "format-plugged": "{capacity}% charging",
+    "format-full": "{capacity}%",
+    "interval": 30
+  },
+
+  "hyprland/workspaces": {
+    "disable-scroll": false,
+    "format": "{name}"
+  },
+
+  "hyprland/window": {
+    "max-length": 60,
+    "separate-outputs": false
+  }
+}
+

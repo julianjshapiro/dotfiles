@@ -1,0 +1,2 @@
+action = copy
+files = [emojis, math, greek_and_coptic]

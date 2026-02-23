@@ -1,0 +1,226 @@
+# Basic Document Structure
+snippet doc "LaTeX Document Skeleton" b
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+
+\title{$1}
+\author{$2}
+\date{$3}
+
+\begin{document}
+
+\maketitle
+
+$0
+
+\end{document}
+endsnippet
+
+# Sectioning
+snippet sec "Section" b
+\section{$1}
+$0
+endsnippet
+
+snippet ssec "Subsection" b
+\subsection{$1}
+$0
+endsnippet
+
+# Math Environments
+snippet eq "Equation environment" b
+\begin{equation}
+    $1
+\end{equation}
+$0
+endsnippet
+
+snippet al "Align environment" b
+\begin{align}
+    $1
+\end{align}
+$0
+endsnippet
+
+snippet dm "Display Math (inline)" b
+\[
+    $1
+\]
+$0
+endsnippet
+
+snippet it "Itemize" b
+\begin{itemize}
+    \item $1
+\end{itemize}
+$0
+endsnippet
+
+snippet en "Enumerate" b
+\begin{enumerate}
+    \item $1
+\end{enumerate}
+$0
+endsnippet
+
+# Inline Math
+snippet in "Inline Math" w
+\$${1:expression}\$$0
+endsnippet
+
+# Figures
+snippet fig "Figure environment" b
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\linewidth]{${1:filename}}
+    \caption{$2}
+    \label{fig:$3}
+\end{figure}
+$0
+endsnippet
+
+# Tables
+snippet tab "Tabular environment" b
+\begin{table}[h]
+    \centering
+    \begin{tabular}{${1:c|c}}
+        \hline
+        ${2:Header 1} & ${3:Header 2} \\
+        \hline
+        $4 & $5 \\
+        \hline
+    \end{tabular}
+    \caption{$6}
+    \label{tab:$7}
+\end{table}
+$0
+endsnippet
+
+# Common Math Symbols
+snippet frac "Fraction" w
+\frac{$1}{$2}$0
+endsnippet
+
+snippet sqr "Square root" w
+\sqrt{$1}$0
+endsnippet
+
+snippet hat "Hat" w
+\hat{$1}$0
+endsnippet
+
+snippet sum "Summation" w
+\sum_{${1:i=1}}^{${2:n}} $3$0
+endsnippet
+
+snippet int "Integral" w
+\int_{${1:a}}^{${2:b}} $3 \, \mathrm{d}${4:x}$0
+endsnippet
+
+snippet lim "Limit" w
+\lim_{${1:n \to \infty}} $2$0
+endsnippet
+
+snippet vec "Vector" w
+\vec{$1}$0
+endsnippet
+
+snippet bf "Bold text" w
+\textbf{$1}$0
+endsnippet
+
+snippet itx "Italic text" w
+\textit{$1}$0
+endsnippet
+
+snippet tt "Typewriter (monospace)" w
+\texttt{$1}$0
+endsnippet
+
+# References
+snippet lbl "Label" w
+\label{${1:type:name}}$0
+endsnippet
+
+snippet ref "Reference" w
+\ref{${1:type:name}}$0
+endsnippet
+
+snippet cite "Citation" w
+\cite{${1:key}}$0
+endsnippet
+
+global !p
+def create_matrix_placeholders(snip):
+	# Create anonymous snippet body
+	anon_snippet_body = ""
+
+	# Get start and end line number of expanded snippet
+	start = snip.snippet_start[0]
+	end = snip.snippet_end[0]
+
+	# Append current line into anonymous snippet
+	for i in range(start, end + 1):
+		anon_snippet_body += snip.buffer[i]
+		anon_snippet_body += "" if i == end else "\n"
+
+	# Delete expanded snippet line till second to last line
+	for i in range(start, end):
+		del snip.buffer[start]
+
+	# Empty last expanded snippet line while preserving the line
+	snip.buffer[start] = ''
+
+	# Expand anonymous snippet
+	snip.expand_anon(anon_snippet_body)
+
+def create_matrix(cols, rows, sep, start, end):
+	res = ""
+	placeholder = 1
+	for _ in range(0, int(rows)):
+		res += start + f"${placeholder} "
+		placeholder += 1
+		for _ in range(0, int(cols) - 1):
+			res += sep + f" ${placeholder} "
+			placeholder += 1
+		res += end
+	return res[:-1]
+endglobal
+
+post_jump "create_matrix_placeholders(snip)"
+snippet 'pmatrix(\d+),(\d+)' "LaTeX pmatrix" br
+\begin{pmatrix}
+`!p
+snip.rv = create_matrix(match.group(2), match.group(1), "&", "\t", "\\\\\\\\\n")
+
+`
+$0
+\end{pmatrix}
+endsnippet
+
+snippet h "Section" w
+\caption{${1:key}}$0
+endsnippet
+
+# TikZ environment
+snippet tikz "Insert TikZ environment" b
+\begin{tikzpicture}[${1:scale=1}]
+    ${0}
+\end{tikzpicture}
+endsnippet
+
+# TikZ figure (centered with caption & label)
+snippet tikzfig "TikZ figure environment" b
+\begin{figure}[h!]
+    \centering
+    \begin{tikzpicture}[${1:scale=1}]
+        ${0}
+    \end{tikzpicture}
+    \caption{${2:Caption here}}
+    \label{fig:${3:label}}
+\end{figure}
+endsnippet
+
